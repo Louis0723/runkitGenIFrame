@@ -6,45 +6,46 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      code: 'const _ = require("lodash");\n_.chunk(["a", "b", "c", "d"], 2);'
+      code: window.localStorage.getItem('code') || '// javascript\nconst _ = require("lodash");\n_.chunk(["a", "b", "c", "d"], 2);'
     }
   }
 
   runkitCode(code) {
-    let base64code = encodeURIComponent(Buffer.from(code).toString('base64'))
-    let iframe = `<iframe src="https://runkit.com/e?base64source=${base64code}" frameborder="0" style="width: 100%;"></iframe>`;
+    const base64code = encodeURIComponent(Buffer.from(code).toString('base64'))
+    const iframe = `<iframe src="https://runkit.com/e?base64source=${base64code}" frameborder="0" style="width: 100%;"></iframe>`;
     this.setState({ code: iframe })
     return iframe;
   }
 
   componentDidMount() {
     if (!this.editor2) {
-      let editor = monaco.editor.create(document.getElementById("editor"), {
-        value: "// javascript",
+      const editor = monaco.editor.create(document.getElementById("editor"), {
+        value: this.state.code,
         language: "javascript",
         theme: "vs-dark"
       });
       editor.onDidChangeModelContent(
         debounce(() => {
-          let code = editor.getValue()
-          let iframe = this.runkitCode(code)
+          const code = editor.getValue()
+          window.localStorage.setItem('code', code)
+          const iframe = this.runkitCode(code)
           this.editor2.setValue(iframe);
         }, 2000)
       )
+      const iframe = this.runkitCode(this.state.code);
 
       this.editor2 = monaco.editor.create(document.getElementById("editor2"), {
-        value: "<!-- iframe tag -->",
+        value: "<!-- iframe tag -->\n" + iframe,
         language: "html",
         theme: "vs-dark",
       });
 
       this.editor2.onDidChangeModelContent(
         debounce(() => {
-          let code = this.editor2.getValue()
+          const code = this.editor2.getValue()
           this.setState({ code })
         }, 2000)
       )
-      this.runkitCode(this.state.code)
     }
   }
 
@@ -57,7 +58,7 @@ class App extends React.Component {
         <div id="editor2" key="editor2"
           style={{ width: '100%', height: '100px' }}
         />
-        <p>
+        <p style={{ margin: '0px' }}>
           preview
           <div dangerouslySetInnerHTML={{ __html: this.state.code }} />
         </p>
