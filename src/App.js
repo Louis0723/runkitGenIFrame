@@ -13,7 +13,7 @@ class App extends React.Component {
 
   runkitCode(code) {
     const base64code = encodeURIComponent(Buffer.from(code).toString('base64'))
-    const iframe = `<iframe src="https://runkit.com/e?base64source=${base64code}" frameborder="0" style="width: 100%;"></iframe>`;
+    const iframe = `<iframe src="https://runkit.com/e?base64source=${base64code}"\n\tframeborder="0"\n\tstyle="width: 100%;">\n</iframe>`;
     this.setState({ code: iframe })
     return iframe;
   }
