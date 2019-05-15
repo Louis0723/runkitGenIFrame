@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import * as monaco from 'monaco-editor';
 import * as debounce from 'lodash/debounce';
+import 'monaco-editor/esm/vs/editor/contrib/find/findController.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -58,10 +59,10 @@ class App extends React.Component {
         <div id="editor2" key="editor2"
           style={{ width: '100%', height: '100px' }}
         />
-        <p style={{ margin: '0px' }}>
+        <div style={{ margin: '0px' }}>
           preview
           <div dangerouslySetInnerHTML={{ __html: this.state.code }} />
-        </p>
+        </div>
       </Fragment>
     );
   }
